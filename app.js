@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var Alignments = {
 	GOOD: "Good",
 	EVIL: "Evil",
@@ -5,7 +7,17 @@ var Alignments = {
 };
 module.exports.Alignments = Alignments;
 
-function Character() {
+var defaultClassModifiers = {
+    isRollIncreaseAllLevels: false
+};
+
+var fighter = _.assign(_.clone(defaultClassModifiers, true),{isRollIncreaseAllLevels: true});
+
+module.exports.Classes = {
+    Fighter: fighter
+}
+
+function Character(classModifiers) {
     this.Abilities = { 
         Strength : 10,
         Dexterity: 10,
@@ -14,6 +26,11 @@ function Character() {
         Intelligence: 10,
         Charisma: 10
     };
+    if(classModifiers == undefined){
+        this.classModifiers = defaultClassModifiers;
+    }else{
+        this.classModifiers = classModifiers;    
+    }
 }
 Character.prototype = {
     name: 'Jimmy Felon',
@@ -108,10 +125,17 @@ var Attack = function (attacker, defender, attackRoll) {
 };
 module.exports.Attack = Attack;
 
-var attackRoll = function(attackerLevel, expectedAttackRoll) {
+var attackRoll = function(attacker, expectedAttackRoll) {
     if (expectedAttackRoll == undefined) {
         expectedAttackRoll = 10; //Math.random() * (max - min) + min;
     }
-    return expectedAttackRoll + Math.floor(attackerLevel / 2);
+    if(attacker.classModifiers.isRollIncreaseAllLevels){
+        return expectedAttackRoll + attacker.level;
+    }else{
+        return expectedAttackRoll + Math.floor(attacker.level / 2);
+    }
+    
 };
 module.exports.attackRoll = attackRoll;
+
+

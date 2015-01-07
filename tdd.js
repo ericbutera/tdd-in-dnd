@@ -177,10 +177,19 @@ this.suite1 = {
         test.done();
     },
     'attack roll incremented by 1 for going up to an even level': function(test) {
-        var level = 2
-            , dieRoll = 10;
-        test.equal(app.attackRoll(level, dieRoll), 11);
+        var attacker = new app.Character();
+        console.log("is role increase all levels %j",attacker.classModifiers.isRollIncreaseAllLevels);
+        attacker.level = 2;
+        var dieRoll = 10;
+        test.equal(app.attackRoll(attacker, dieRoll), 11);
         test.done();  
+    },
+    'fighter class': function(test) {
+        var fighter = app.Classes.Fighter;
+        var attacker = new app.Character(fighter);
+        attacker.level = 3;
+        test.equal(app.attackRoll(attacker, 10), 13);
+        test.done();
     }
 };
 
